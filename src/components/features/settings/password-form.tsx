@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import { Loader2, Lock, Eye, EyeOff } from "lucide-react"
+import { Loader2, Lock, Eye, EyeOff, Mail } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 const passwordSchema = z.object({
     currentPassword: z.string().min(1, "Current password is required"),
@@ -22,8 +23,10 @@ const passwordSchema = z.object({
 type PasswordValues = z.infer<typeof passwordSchema>
 
 export function PasswordForm() {
+    const { data: session } = useSession()
     const [showCurrentPassword, setShowCurrentPassword] = useState(false)
     const [showNewPassword, setShowNewPassword] = useState(false)
+    const [isSendingResetEmail, setIsSendingResetEmail] = useState(false)
 
     const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<PasswordValues>({
         resolver: zodResolver(passwordSchema),
@@ -49,6 +52,32 @@ export function PasswordForm() {
             reset()
         } catch (error: any) {
             toast.error(error.message || "Failed to update password")
+        }
+    }
+
+    const handleForgotPassword = async () => {
+        if (!session?.user?.email) {
+            toast.error("Unable to send reset email. Please try again later.")
+            return
+        }
+
+        setIsSendingResetEmail(true)
+        try {
+            const response = await fetch("/api/auth/forgot-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: session.user.email }),
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to send reset email")
+            }
+
+            toast.success("Password reset link sent to your email!")
+        } catch (error) {
+            toast.error("Failed to send reset email. Please try again.")
+        } finally {
+            setIsSendingResetEmail(false)
         }
     }
 
@@ -82,6 +111,24 @@ export function PasswordForm() {
                         {errors.currentPassword && (
                             <p className="text-sm text-red-500">{errors.currentPassword.message}</p>
                         )}
+                        <button
+                            type="button"
+                            onClick={handleForgotPassword}
+                            disabled={isSendingResetEmail}
+                            className="text-sm text-[#1E3A8A] hover:underline flex items-center gap-1 disabled:opacity-50"
+                        >
+                            {isSendingResetEmail ? (
+                                <>
+                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                    Sending...
+                                </>
+                            ) : (
+                                <>
+                                    <Mail className="h-3 w-3" />
+                                    Forgot your current password?
+                                </>
+                            )}
+                        </button>
                     </div>
 
                     <div className="space-y-2 relative">

@@ -107,7 +107,7 @@ function LoginForm() {
 
                         <div className="flex items-center justify-end">
                             <Link
-                                href="/reset-password"
+                                href="/forgot-password"
                                 className="text-sm text-[#1E3A8A] hover:underline"
                             >
                                 Forgot password?

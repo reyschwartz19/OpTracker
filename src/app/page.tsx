@@ -17,12 +17,16 @@ export default function HomePage() {
                 OpTracker
               </span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Link href="/login">
-                <Button variant="ghost">Log In</Button>
+                <Button variant="ghost" size="sm" className="text-sm sm:text-base">Log In</Button>
               </Link>
-              <Link href="/signup">
-                <Button>Get Started</Button>
+              <Link href="/signup" className="hidden xs:block sm:block">
+                <Button size="sm" className="sm:text-base">Get Started</Button>
+              </Link>
+              {/* Mobile: Single compact button */}
+              <Link href="/signup" className="block xs:hidden sm:hidden">
+                <Button size="sm">Sign Up</Button>
               </Link>
             </div>
           </div>

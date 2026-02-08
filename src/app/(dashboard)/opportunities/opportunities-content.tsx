@@ -166,15 +166,17 @@ export function OpportunitiesContent({ opportunities }: OpportunitiesContentProp
                                                         {opp.title}
                                                     </h3>
                                                     {opp.sourceUrl && (
-                                                        <a
-                                                            href={opp.sourceUrl}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            onClick={(e) => e.stopPropagation()}
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.preventDefault()
+                                                                e.stopPropagation()
+                                                                window.open(opp.sourceUrl!, '_blank', 'noopener,noreferrer')
+                                                            }}
                                                             className="text-[#1E3A8A] hover:text-[#4338CA]"
                                                         >
                                                             <ExternalLink className="w-4 h-4" />
-                                                        </a>
+                                                        </button>
                                                     )}
                                                 </div>
                                                 {opp.organization && (
