@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   keywords: ['scholarship', 'internship', 'opportunity tracker', 'application manager'],
 }
 
+import { Toaster } from 'sonner'
+
 export default function RootLayout({
   children,
 }: {
@@ -22,6 +24,7 @@ export default function RootLayout({
       <body className="antialiased">
         <Providers>
           {children}
+          <Toaster />
         </Providers>
       </body>
     </html>

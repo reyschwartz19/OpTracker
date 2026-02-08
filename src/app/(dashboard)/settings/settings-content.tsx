@@ -9,6 +9,7 @@ import { Select } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { fadeSlideIn } from '@/lib/motion/presets'
 import { User, Clock, Bell, Save, Check } from 'lucide-react'
+import { PasswordForm } from '@/components/features/settings/password-form'
 
 interface UserSettings {
     id: string
@@ -157,6 +158,9 @@ export function SettingsContent({ user }: SettingsContentProps) {
                     </p>
                 </CardContent>
             </Card>
+
+            {/* Password Settings */}
+            <PasswordForm />
 
             {/* Save Button */}
             <div className="flex justify-end">
