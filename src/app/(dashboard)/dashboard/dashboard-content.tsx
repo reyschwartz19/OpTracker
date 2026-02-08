@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatRelativeDate, parseJsonArray } from '@/lib/utils'
+import { addDays } from 'date-fns'
 import { fadeSlideIn, staggerContainer, staggerItem } from '@/lib/motion/presets'
 import {
     Briefcase,
@@ -162,7 +163,7 @@ export function DashboardContent({
                                     </div>
                                     <Badge
                                         variant={
-                                            opp.deadline && new Date(opp.deadline) < new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+                                            opp.deadline && new Date(opp.deadline) < addDays(new Date(), 3)
                                                 ? 'danger'
                                                 : 'secondary'
                                         }

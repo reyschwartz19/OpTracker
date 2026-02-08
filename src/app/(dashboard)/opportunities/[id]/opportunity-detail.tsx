@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
-import { ArrowLeft, Calendar, ExternalLink, Trash2, Save, Plus, X, Upload } from 'lucide-react'
+import { ArrowLeft, Calendar, ExternalLink, Trash2, Save, Plus, X, Upload, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -33,7 +33,16 @@ interface Opportunity {
     checklistItems: string | null
     tags: string | null
     createdAt: Date
-    timelineSteps: any[]
+    timelineSteps: TimelineStep[]
+}
+
+interface TimelineStep {
+    id: string
+    stepType: string
+    label: string
+    stepDate: Date
+    createdAt: Date
+    notes: string | null
 }
 
 interface OpportunityDetailProps {
@@ -168,6 +177,7 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
                     <CardContent className="p-4 flex flex-col justify-center h-full">
                         <span className="text-xs text-[#64748B] uppercase font-semibold">Status</span>
                         <div className="mt-1">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             <Badge variant={status as any} className="text-sm">
                                 {status.replace('_', ' ')}
                             </Badge>

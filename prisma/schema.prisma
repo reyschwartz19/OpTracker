@@ -1,12 +1,12 @@
 // Opportunity Manager Database Schema
-// Using SQLite for development
+// Using PostgreSQL for cloud deployment
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
