@@ -1,0 +1,260 @@
+// Opportunity Manager Database Schema
+// Using SQLite for development
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  password      String?
+  timezone      String    @default("UTC")
+  
+  // Profile information for future smart discovery
+  profile       String?   // JSON string: { fields_of_study, level, preferred_countries, keywords }
+  
+  // Preferences
+  emailPreferences       String? // JSON string
+  defaultReminderCadence String  @default("7,3,1")
+  
+  // Roles
+  role          String    @default("user") // user, admin, curator
+  
+  accounts      Account[]
+  sessions      Session[]
+  opportunities Opportunity[]
+  documents     Document[]
+  userActions   UserAction[]
+  reminders     Reminder[]
+  submissions   OpportunitySubmission[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                 String  @id @default(uuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Opportunity {
+  id                String    @id @default(uuid())
+  
+  // Basic information
+  title             String
+  organization      String?
+  description       String?
+  sourceUrl         String?
+  sourceType        String    @default("user") // user, curated, api, submission
+  
+  // Classification
+  opportunityType   String    // scholarship, internship, fellowship, job
+  eligibilityFields String?   // JSON array string
+  eligibilityLevels String?   // JSON array string
+  eligibleCountries String?   // JSON array string
+  tags              String?   // JSON array string
+  
+  // Important dates
+  deadline          DateTime?
+  postedDate        DateTime?
+  
+  // Status and tracking
+  status            String    @default("interested") // interested, in_progress, submitted, interview, accepted, rejected, archived
+  
+  // Checklist (JSON array)
+  checklistItems    String?   // JSON array: [{ label, done, optional, notes }]
+  
+  // Metadata
+  createdByUserId   String
+  visibility        String    @default("private") // private, shared, public
+  confidenceScore   Float?
+  extractedMeta     String?   // JSON
+  
+  // For admin curation
+  moderationStatus  String    @default("approved") // pending, approved, rejected
+  moderatedBy       String?
+  moderatedAt       DateTime?
+  
+  // Relations
+  createdBy         User      @relation(fields: [createdByUserId], references: [id])
+  attachments       Document[]
+  reminders         Reminder[]
+  userActions       UserAction[]
+  timelineSteps     TimelineStep[]
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model TimelineStep {
+  id              String      @id @default(uuid())
+  opportunityId   String
+  
+  stepType        String      // predefined: saved, started, submitted, interview, decision_pending, accepted, rejected OR custom
+  label           String
+  notes           String?
+  stepDate        DateTime    @default(now())
+  
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  attachments     Document[]
+  
+  createdAt       DateTime    @default(now())
+}
+
+model Document {
+  id              String      @id @default(uuid())
+  userId          String
+  
+  // File information
+  filename        String
+  fileUrl         String
+  fileSize        Int
+  mimeType        String
+  
+  // Content
+  textExtracted   String?
+  thumbnailUrl    String?
+  
+  // Versioning
+  version         Int         @default(1)
+  isLatestVersion Boolean     @default(true)
+  parentDocId     String?
+  
+  // Organization
+  category        String?     // cv, essay, transcript, recommendation, other
+  
+  // Sharing
+  isShared        Boolean     @default(false)
+  shareToken      String?     @unique
+  shareExpiresAt  DateTime?
+  sharePassword   String?
+  
+  // Relations
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunityId   String?
+  opportunity     Opportunity? @relation(fields: [opportunityId], references: [id])
+  timelineStepId  String?
+  timelineStep    TimelineStep? @relation(fields: [timelineStepId], references: [id])
+  
+  createdAt       DateTime    @default(now())
+}
+
+model Reminder {
+  id              String      @id @default(uuid())
+  userId          String
+  opportunityId   String
+  
+  // Scheduling
+  scheduledAt     DateTime
+  offsetDays      Int
+  
+  // Delivery
+  channel         String      @default("email") // email, inapp
+  status          String      @default("pending") // pending, sent, failed, cancelled
+  sentAt          DateTime?
+  attempts        Int         @default(0)
+  lastAttemptAt   DateTime?
+  errorMessage    String?
+  
+  // Relations
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  createdAt       DateTime    @default(now())
+}
+
+model UserAction {
+  id              String      @id @default(uuid())
+  userId          String
+  opportunityId   String
+  
+  actionType      String      // save, apply, view, dismiss, unsave
+  metadata        String?     // JSON
+  
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  createdAt       DateTime    @default(now())
+}
+
+model OpportunitySubmission {
+  id              String      @id @default(uuid())
+  submittedBy     String
+  
+  // Submitted opportunity data
+  title           String
+  organization    String?
+  description     String?
+  sourceUrl       String?
+  opportunityType String
+  eligibilityFields String?   // JSON array
+  eligibilityLevels String?   // JSON array
+  eligibleCountries String?   // JSON array
+  tags            String?     // JSON array
+  deadline        DateTime?
+  
+  // Moderation
+  status          String      @default("pending") // pending, approved, rejected
+  reviewNotes     String?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  
+  // If approved, link to created opportunity
+  approvedOpportunityId String?
+  
+  submitter       User        @relation(fields: [submittedBy], references: [id])
+  
+  createdAt       DateTime    @default(now())
+}
+
+model EmailDigest {
+  id              String      @id @default(uuid())
+  userId          String
+  frequency       String      // daily, weekly
+  lastSentAt      DateTime?
+  nextScheduledAt DateTime
+  enabled         Boolean     @default(true)
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@unique([userId, frequency])
+}

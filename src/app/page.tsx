@@ -1,65 +1,178 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Briefcase, Calendar, FileText, Bell, CheckCircle2, ArrowRight } from 'lucide-react'
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Navigation */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E2E8F0]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#1E3A8A]">
+                <Briefcase className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-heading text-lg font-semibold text-[#0F172A]">
+                OpTracker
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link href="/login">
+                <Button variant="ghost">Log In</Button>
+              </Link>
+              <Link href="/signup">
+                <Button>Get Started</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0F172A] mb-6">
+            Track Your Path to{' '}
+            <span className="text-[#1E3A8A]">Success</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+          <p className="text-lg sm:text-xl text-[#64748B] mb-8 max-w-2xl mx-auto">
+            Manage scholarships, internships, and opportunities in one place.
+            Never miss a deadline. Stay organized. Achieve your goals.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/signup">
+              <Button size="lg" className="w-full sm:w-auto">
+                Start Tracking Free
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                I Have an Account
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="font-heading text-3xl sm:text-4xl font-semibold text-[#0F172A] mb-4">
+              Everything You Need
+            </h2>
+            <p className="text-lg text-[#64748B] max-w-2xl mx-auto">
+              Built for students and early career seekers who want to stay organized
+              and never miss an opportunity.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: Briefcase,
+                title: 'Opportunity Tracking',
+                description: 'Save and organize scholarships, internships, and jobs with full details.',
+              },
+              {
+                icon: Calendar,
+                title: 'Deadline Calendar',
+                description: 'Visual calendar view of all your deadlines. Export to iCal.',
+              },
+              {
+                icon: Bell,
+                title: 'Smart Reminders',
+                description: 'Get notified before deadlines. Customize your reminder schedule.',
+              },
+              {
+                icon: FileText,
+                title: 'Document Vault',
+                description: 'Store CVs, essays, and transcripts. Version history included.',
+              },
+            ].map((feature) => (
+              <div
+                key={feature.title}
+                className="p-6 rounded-[14px] bg-[#F8FAFC] border border-[#E2E8F0] hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+              >
+                <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#1E3A8A]/10 mb-4">
+                  <feature.icon className="w-6 h-6 text-[#1E3A8A]" />
+                </div>
+                <h3 className="font-heading text-lg font-semibold text-[#0F172A] mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-[#64748B] text-sm">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="font-heading text-3xl sm:text-4xl font-semibold text-[#0F172A] mb-4">
+              Why Students Love OpTracker
+            </h2>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              'Save opportunities from any website with one click',
+              'Track application status from interested to accepted',
+              'Get reminders 7, 3, and 1 day before deadlines',
+              'Store all your documents in one secure place',
+              'Never lose track of what you\'ve applied to',
+            ].map((benefit) => (
+              <div
+                key={benefit}
+                className="flex items-center gap-4 p-4 rounded-lg bg-white border border-[#E2E8F0]"
+              >
+                <CheckCircle2 className="w-5 h-5 text-[#14B8A6] flex-shrink-0" />
+                <span className="text-[#0F172A]">{benefit}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#1E3A8A]">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="font-heading text-3xl sm:text-4xl font-semibold text-white mb-4">
+            Ready to Get Organized?
+          </h2>
+          <p className="text-lg text-white/80 mb-8">
+            Join students who are already tracking their opportunities with OpTracker.
+          </p>
+          <Link href="/signup">
+            <Button
+              size="lg"
+              className="bg-white text-[#1E3A8A] hover:bg-white/90"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              Create Free Account
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-t border-[#E2E8F0]">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Briefcase className="w-5 h-5 text-[#1E3A8A]" />
+            <span className="font-heading font-semibold text-[#0F172A]">OpTracker</span>
+          </div>
+          <p className="text-sm text-[#64748B]">
+            © {new Date().getFullYear()} OpTracker. Made for students.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </footer>
     </div>
-  );
+  )
 }
