@@ -13,6 +13,8 @@ import {
     MoreHorizontal,
     LogOut,
     X,
+    Sparkles,
+    FileText,
 } from 'lucide-react'
 
 const navigation = [
@@ -45,6 +47,40 @@ export function MobileNav() {
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
+
+                        {/* Additional Navigation Links */}
+                        <div className="space-y-1 mb-4">
+                            <Link
+                                href="/discovery"
+                                onClick={() => setShowMore(false)}
+                                className={cn(
+                                    'flex items-center gap-3 w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-150',
+                                    pathname.startsWith('/discovery')
+                                        ? 'bg-[#F1F5F9] text-[#1E3A8A]'
+                                        : 'text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]'
+                                )}
+                            >
+                                <Sparkles className="w-5 h-5" />
+                                Discovery
+                            </Link>
+                            <Link
+                                href="/documents"
+                                onClick={() => setShowMore(false)}
+                                className={cn(
+                                    'flex items-center gap-3 w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-150',
+                                    pathname.startsWith('/documents')
+                                        ? 'bg-[#F1F5F9] text-[#1E3A8A]'
+                                        : 'text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]'
+                                )}
+                            >
+                                <FileText className="w-5 h-5" />
+                                Documents
+                            </Link>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="border-t border-[#E2E8F0] my-2" />
+
                         <button
                             onClick={() => {
                                 setShowMore(false)
