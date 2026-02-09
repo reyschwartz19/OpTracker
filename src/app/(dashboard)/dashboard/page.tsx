@@ -49,10 +49,10 @@ export default async function DashboardPage() {
 
     const stats = {
         total: opportunities,
-        interested: statusCounts.find(s => s.status === 'interested')?._count || 0,
-        inProgress: statusCounts.find(s => s.status === 'in_progress')?._count || 0,
-        submitted: statusCounts.find(s => s.status === 'submitted')?._count || 0,
-        accepted: statusCounts.find(s => s.status === 'accepted')?._count || 0,
+        interested: statusCounts.find((s: any) => s.status === 'interested')?._count || 0,
+        inProgress: statusCounts.find((s: any) => s.status === 'in_progress')?._count || 0,
+        submitted: statusCounts.find((s: any) => s.status === 'submitted')?._count || 0,
+        accepted: statusCounts.find((s: any) => s.status === 'accepted')?._count || 0,
     }
 
     return (
