@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendEmail } from "@/lib/email"
 import ReminderEmail from "@/emails/reminder"
+import { Reminder } from "@prisma/client"
 import { addDays, startOfDay, endOfDay, differenceInDays } from "date-fns"
 
 // Vercel Cron will trigger this
@@ -42,7 +43,7 @@ export async function GET(req: Request) {
             for (const opportunity of opportunities) {
                 // Check if we already sent a reminder for this offset
                 const alreadySent = opportunity.reminders.some(
-                    r => r.offsetDays === offset && r.status === 'sent'
+                    (r: Reminder) => r.offsetDays === offset && r.status === 'sent'
                 )
 
                 if (alreadySent) continue
