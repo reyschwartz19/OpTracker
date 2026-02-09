@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { nanoid } from 'nanoid'
+import { put } from '@vercel/blob'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const ALLOWED_TYPES = [
@@ -48,26 +46,18 @@ export async function POST(req: NextRequest) {
             )
         }
 
-        // Generate unique filename
-        const ext = file.name.split('.').pop() || ''
-        const uniqueFilename = `${nanoid()}.${ext}`
+        // Upload to Vercel Blob
+        const blob = await put(`documents/${session.user.id}/${file.name}`, file, {
+            access: 'public',
+            addRandomSuffix: true,
+        })
 
-        // Save file to local storage (for development)
-        const uploadDir = join(process.cwd(), 'public', 'uploads')
-        await mkdir(uploadDir, { recursive: true })
-
-        const buffer = Buffer.from(await file.arrayBuffer())
-        const filePath = join(uploadDir, uniqueFilename)
-        await writeFile(filePath, buffer)
-
-        const fileUrl = `/uploads/${uniqueFilename}`
-
-        // Create document record (no virus scanning per user request)
+        // Create document record
         const document = await prisma.document.create({
             data: {
                 userId: session.user.id,
                 filename: file.name,
-                fileUrl,
+                fileUrl: blob.url,
                 fileSize: file.size,
                 mimeType: file.type,
                 category,
@@ -78,9 +68,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(document)
     } catch (error) {
         console.error('Upload failed:', error)
+        if ((error as any).code) {
+            console.error('Error Code:', (error as any).code)
+        }
         return NextResponse.json(
-            { error: 'Failed to upload file' },
+            { error: 'Failed to upload file', details: (error as Error).message },
             { status: 500 }
         )
     }
 }
+

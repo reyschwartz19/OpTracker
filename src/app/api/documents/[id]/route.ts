@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { unlink } from 'fs/promises'
-import { join } from 'path'
+import { del } from '@vercel/blob'
 
 // DELETE - Delete document
 export async function DELETE(
@@ -30,12 +29,11 @@ export async function DELETE(
             return NextResponse.json({ error: 'Document not found' }, { status: 404 })
         }
 
-        // Delete file from storage
+        // Delete file from Vercel Blob
         try {
-            const filePath = join(process.cwd(), 'public', document.fileUrl)
-            await unlink(filePath)
+            await del(document.fileUrl)
         } catch {
-            // File may already be deleted
+            // File may already be deleted from blob storage
         }
 
         // Delete document record
@@ -52,3 +50,4 @@ export async function DELETE(
         )
     }
 }
+
