@@ -13,7 +13,7 @@ export const sendEmail = async ({
 }) => {
     try {
         const data = await resend.emails.send({
-            from: 'Opportunity Manager <onboarding@resend.dev>', // Update this with your verified domain
+            from: process.env.EMAIL_FROM || 'Opportunity Manager <onboarding@resend.dev>',
             to,
             subject,
             react,
